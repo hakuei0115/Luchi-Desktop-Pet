@@ -1,0 +1,35 @@
+﻿<Window x:Class="Luchi.DesktopPet.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Luchi Desktop Pet"
+        Height="300"
+        Width="300"
+        WindowStyle="None"
+        ResizeMode="NoResize"
+        AllowsTransparency="True"
+        Background="Transparent"
+        Topmost="True"
+        ShowInTaskbar="True"
+        WindowStartupLocation="CenterScreen">
+
+    <Grid>
+        <Image ImageFailed="PetImage_ImageFailed"
+               MouseLeftButtonDown="PetImage_MouseLeftButtonDown"
+               Source="/Assets/luchi-happy.png"
+               Width="280"
+               Height="280"
+               Stretch="Uniform"
+               HorizontalAlignment="Center"
+               VerticalAlignment="Center"
+               Cursor="Hand">
+
+            <Image.ContextMenu>
+                <ContextMenu>
+                    <MenuItem Header="離開"
+                              Click="ExitMenuItem_Click" />
+                </ContextMenu>
+            </Image.ContextMenu>
+
+        </Image>
+    </Grid>
+</Window>
