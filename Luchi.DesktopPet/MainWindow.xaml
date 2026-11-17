@@ -51,7 +51,14 @@
                Stretch="Uniform"
                HorizontalAlignment="Center"
                VerticalAlignment="Center"
+               RenderTransformOrigin="0.5,1"
                Cursor="Hand">
+
+            <Image.RenderTransform>
+                <ScaleTransform x:Name="PetScale"
+                                ScaleX="1"
+                                ScaleY="1" />
+            </Image.RenderTransform>
 
             <Image.ContextMenu>
                 <ContextMenu>

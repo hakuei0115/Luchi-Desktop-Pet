@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Windows;
 using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Animation;
 using System.Windows.Threading;
 using Drawing = System.Drawing;
 using Forms = System.Windows.Forms;
@@ -97,6 +99,7 @@ namespace Luchi.DesktopPet
         {
             EndPress();
             HideSpeechBubble();
+            ResetPetScale();
             Hide();
         }
 
@@ -170,6 +173,7 @@ namespace Luchi.DesktopPet
 
             EndPress();
             HideSpeechBubble();
+            ResetPetScale();
 
             if (Mouse.LeftButton == MouseButtonState.Pressed)
             {
@@ -234,8 +238,53 @@ namespace Luchi.DesktopPet
             }
         }
 
+        private void PlayClickAnimation()
+        {
+            // 連續點擊時，先取消舊動畫並恢復原始大小。
+            ResetPetScale();
+
+            var animation = new DoubleAnimation
+            {
+                From = 1.0,
+                To = 1.04,
+                Duration = new Duration(TimeSpan.FromMilliseconds(160)),
+                AutoReverse = true,
+                FillBehavior = FillBehavior.Stop,
+                EasingFunction = new SineEase
+                {
+                    EasingMode = EasingMode.EaseInOut
+                }
+            };
+
+            PetScale.BeginAnimation(
+                ScaleTransform.ScaleXProperty,
+                animation,
+                HandoffBehavior.SnapshotAndReplace);
+
+            PetScale.BeginAnimation(
+                ScaleTransform.ScaleYProperty,
+                animation,
+                HandoffBehavior.SnapshotAndReplace);
+        }
+
+        private void ResetPetScale()
+        {
+            PetScale.BeginAnimation(
+                ScaleTransform.ScaleXProperty,
+                null);
+
+            PetScale.BeginAnimation(
+                ScaleTransform.ScaleYProperty,
+                null);
+
+            PetScale.ScaleX = 1.0;
+            PetScale.ScaleY = 1.0;
+        }
+
         private void ShowClickReaction()
         {
+            PlayClickAnimation();
+
             BubbleText.Text = "主人，怎麼了？";
             SpeechBubble.Visibility = Visibility.Visible;
 
@@ -271,6 +320,7 @@ namespace Luchi.DesktopPet
         private void Window_Closed(object? sender, EventArgs e)
         {
             EndPress();
+            ResetPetScale();
 
             _bubbleTimer.Stop();
             _bubbleTimer.Tick -= BubbleTimer_Tick;
