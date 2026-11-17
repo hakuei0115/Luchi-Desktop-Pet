@@ -51,25 +51,58 @@
                Stretch="Uniform"
                HorizontalAlignment="Center"
                VerticalAlignment="Center"
-               RenderTransformOrigin="0.5,1"
                Cursor="Hand">
 
             <Image.RenderTransform>
                 <ScaleTransform x:Name="PetScale"
                                 ScaleX="1"
-                                ScaleY="1" />
+                                ScaleY="1"
+                                CenterX="140"
+                                CenterY="270" />
             </Image.RenderTransform>
 
             <Image.ContextMenu>
                 <ContextMenu>
                     <MenuItem Header="隱藏露希"
-                              Click="HideMenuItem_Click" />
+                            Click="HideMenuItem_Click" />
                     <Separator />
                     <MenuItem Header="離開"
-                              Click="ExitMenuItem_Click" />
+                            Click="ExitMenuItem_Click" />
                 </ContextMenu>
             </Image.ContextMenu>
 
         </Image>
+
+        <Canvas x:Name="CalibrationGuide"
+                Grid.Row="1"
+                Width="280"
+                Height="280"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                Visibility="Collapsed"
+                IsHitTestVisible="False">
+
+            <Line X1="10"
+                Y1="20"
+                X2="270"
+                Y2="20"
+                Stroke="#808080"
+                StrokeThickness="1"
+                StrokeDashArray="4,4" />
+
+            <Line X1="10"
+                Y1="270"
+                X2="270"
+                Y2="270"
+                Stroke="#E08835"
+                StrokeThickness="1" />
+
+            <Line X1="140"
+                Y1="260"
+                X2="140"
+                Y2="279"
+                Stroke="#E08835"
+                StrokeThickness="1" />
+        </Canvas>
     </Grid>
 </Window>

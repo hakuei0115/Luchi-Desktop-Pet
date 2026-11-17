@@ -16,10 +16,16 @@
 
   <ItemGroup>
     <None Remove="Assets\luchi-happy.png" />
+    <None Remove="Assets\luchi-Idle.png" />
   </ItemGroup>
 
   <ItemGroup>
-    <Resource Include="Assets\luchi-happy.png" />
+    <Resource Include="Assets\luchi-happy.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Assets\luchi-Idle.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
   </ItemGroup>
 
   <ItemGroup>

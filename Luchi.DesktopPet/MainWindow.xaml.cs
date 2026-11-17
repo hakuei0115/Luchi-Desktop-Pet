@@ -13,6 +13,8 @@ namespace Luchi.DesktopPet
     {
         private Point _pressStartPosition;
         private bool _isPressPending;
+        private readonly ImageSource _idleSprite;
+        private readonly ImageSource _happySprite;
 
         private readonly DispatcherTimer _bubbleTimer =
             new DispatcherTimer
@@ -28,11 +30,26 @@ namespace Luchi.DesktopPet
         {
             InitializeComponent();
 
+            _idleSprite = PetSpriteFactory.Create(
+                "Assets/luchi-idle.png",
+                1186,
+                1327,
+                21,
+                new Point(580, 1314));
+
+            _happySprite = PetSpriteFactory.Create(
+                "Assets/luchi-happy.png",
+                1142,
+                1377,
+                31,
+                new Point(568.5, 1365));
+
+            PetImage.Source = _idleSprite;
+
             _bubbleTimer.Tick += BubbleTimer_Tick;
 
             _trayMenu = CreateTrayMenu();
 
-            // 複製 Windows 內建圖示，作為目前的佔位圖示。
             _trayIconImage =
                 (Drawing.Icon)Drawing.SystemIcons.Application.Clone();
 
@@ -45,6 +62,36 @@ namespace Luchi.DesktopPet
 
             _trayIcon.MouseDoubleClick += TrayIcon_MouseDoubleClick;
             _trayIcon.Visible = true;
+        }
+
+        private void ReturnToIdle()
+        {
+            HideSpeechBubble();
+            ResetPetScale();
+
+            PetImage.Source = _idleSprite;
+        }
+
+        private void PreviewIdleMenuItem_Click(
+            object sender,
+            RoutedEventArgs e)
+        {
+            EndPress();
+            HideSpeechBubble();
+            ResetPetScale();
+
+            PetImage.Source = _idleSprite;
+        }
+
+        private void PreviewHappyMenuItem_Click(
+            object sender,
+            RoutedEventArgs e)
+        {
+            EndPress();
+            HideSpeechBubble();
+            ResetPetScale();
+
+            PetImage.Source = _happySprite;
         }
 
         private Forms.ContextMenuStrip CreateTrayMenu()
@@ -98,8 +145,7 @@ namespace Luchi.DesktopPet
         private void HidePet()
         {
             EndPress();
-            HideSpeechBubble();
-            ResetPetScale();
+            ReturnToIdle();
             Hide();
         }
 
@@ -172,8 +218,7 @@ namespace Luchi.DesktopPet
             e.Handled = true;
 
             EndPress();
-            HideSpeechBubble();
-            ResetPetScale();
+            ReturnToIdle();
 
             if (Mouse.LeftButton == MouseButtonState.Pressed)
             {
@@ -283,6 +328,7 @@ namespace Luchi.DesktopPet
 
         private void ShowClickReaction()
         {
+            PetImage.Source = _happySprite;
             PlayClickAnimation();
 
             BubbleText.Text = "主人，怎麼了？";
@@ -300,7 +346,7 @@ namespace Luchi.DesktopPet
 
         private void BubbleTimer_Tick(object? sender, EventArgs e)
         {
-            HideSpeechBubble();
+            ReturnToIdle();
         }
 
         private void HideMenuItem_Click(
