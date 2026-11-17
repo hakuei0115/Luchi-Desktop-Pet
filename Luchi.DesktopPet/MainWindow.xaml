@@ -55,6 +55,9 @@
 
             <Image.ContextMenu>
                 <ContextMenu>
+                    <MenuItem Header="隱藏露希"
+                              Click="HideMenuItem_Click" />
+                    <Separator />
                     <MenuItem Header="離開"
                               Click="ExitMenuItem_Click" />
                 </ContextMenu>

@@ -2,6 +2,8 @@
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Threading;
+using Drawing = System.Drawing;
+using Forms = System.Windows.Forms;
 
 namespace Luchi.DesktopPet
 {
@@ -16,11 +18,117 @@ namespace Luchi.DesktopPet
                 Interval = TimeSpan.FromSeconds(3)
             };
 
+        private readonly Forms.ContextMenuStrip _trayMenu;
+        private readonly Forms.NotifyIcon _trayIcon;
+        private readonly Drawing.Icon _trayIconImage;
+
         public MainWindow()
         {
             InitializeComponent();
 
             _bubbleTimer.Tick += BubbleTimer_Tick;
+
+            _trayMenu = CreateTrayMenu();
+
+            // 複製 Windows 內建圖示，作為目前的佔位圖示。
+            _trayIconImage =
+                (Drawing.Icon)Drawing.SystemIcons.Application.Clone();
+
+            _trayIcon = new Forms.NotifyIcon
+            {
+                Icon = _trayIconImage,
+                Text = "Luchi Desktop Pet",
+                ContextMenuStrip = _trayMenu
+            };
+
+            _trayIcon.MouseDoubleClick += TrayIcon_MouseDoubleClick;
+            _trayIcon.Visible = true;
+        }
+
+        private Forms.ContextMenuStrip CreateTrayMenu()
+        {
+            var menu = new Forms.ContextMenuStrip();
+
+            var showItem = menu.Items.Add(
+                "顯示露希",
+                null,
+                TrayShowMenuItem_Click);
+
+            var hideItem = menu.Items.Add(
+                "隱藏露希",
+                null,
+                TrayHideMenuItem_Click);
+
+            menu.Items.Add(new Forms.ToolStripSeparator());
+
+            menu.Items.Add(
+                "離開",
+                null,
+                TrayExitMenuItem_Click);
+
+            menu.Opening += (sender, e) =>
+            {
+                bool needsRestore =
+                    !IsVisible || WindowState == WindowState.Minimized;
+
+                showItem.Visible = needsRestore;
+                hideItem.Visible = !needsRestore;
+            };
+
+            return menu;
+        }
+
+        private void ShowPet()
+        {
+            if (!IsVisible)
+            {
+                Show();
+            }
+
+            if (WindowState == WindowState.Minimized)
+            {
+                WindowState = WindowState.Normal;
+            }
+
+            Activate();
+        }
+
+        private void HidePet()
+        {
+            EndPress();
+            HideSpeechBubble();
+            Hide();
+        }
+
+        private void TrayShowMenuItem_Click(
+            object? sender,
+            EventArgs e)
+        {
+            ShowPet();
+        }
+
+        private void TrayHideMenuItem_Click(
+            object? sender,
+            EventArgs e)
+        {
+            HidePet();
+        }
+
+        private void TrayExitMenuItem_Click(
+            object? sender,
+            EventArgs e)
+        {
+            Close();
+        }
+
+        private void TrayIcon_MouseDoubleClick(
+            object? sender,
+            Forms.MouseEventArgs e)
+        {
+            if (e.Button == Forms.MouseButtons.Left)
+            {
+                ShowPet();
+            }
         }
 
         private void PetImage_MouseLeftButtonDown(
@@ -131,7 +239,6 @@ namespace Luchi.DesktopPet
             BubbleText.Text = "主人，怎麼了？";
             SpeechBubble.Visibility = Visibility.Visible;
 
-            // 重新點擊時，從現在開始重新計時。
             _bubbleTimer.Stop();
             _bubbleTimer.Start();
         }
@@ -147,12 +254,11 @@ namespace Luchi.DesktopPet
             HideSpeechBubble();
         }
 
-        private void Window_Closed(object? sender, EventArgs e)
+        private void HideMenuItem_Click(
+            object sender,
+            RoutedEventArgs e)
         {
-            EndPress();
-
-            _bubbleTimer.Stop();
-            _bubbleTimer.Tick -= BubbleTimer_Tick;
+            HidePet();
         }
 
         private void ExitMenuItem_Click(
@@ -160,6 +266,21 @@ namespace Luchi.DesktopPet
             RoutedEventArgs e)
         {
             Close();
+        }
+
+        private void Window_Closed(object? sender, EventArgs e)
+        {
+            EndPress();
+
+            _bubbleTimer.Stop();
+            _bubbleTimer.Tick -= BubbleTimer_Tick;
+
+            _trayIcon.Visible = false;
+            _trayIcon.MouseDoubleClick -= TrayIcon_MouseDoubleClick;
+            _trayIcon.Dispose();
+
+            _trayMenu.Dispose();
+            _trayIconImage.Dispose();
         }
 
         private void PetImage_ImageFailed(
