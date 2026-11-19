@@ -30,12 +30,7 @@ namespace Luchi.DesktopPet
         {
             InitializeComponent();
 
-            _idleSprite = PetSpriteFactory.Create(
-                "Assets/luchi-idle.png",
-                1186,
-                1327,
-                21,
-                new Point(580, 1314));
+            _idleSprite = InitializeIdleBlink();
 
             _happySprite = PetSpriteFactory.Create(
                 "Assets/luchi-happy.png",
@@ -45,6 +40,14 @@ namespace Luchi.DesktopPet
                 new Point(568.5, 1365));
 
             PetImage.Source = _idleSprite;
+
+            ContentRendered += (_, _) =>
+            {
+                if (!_idleBlinkTimer.IsEnabled)
+                {
+                    ScheduleIdleBlink();
+                }
+            };
 
             _bubbleTimer.Tick += BubbleTimer_Tick;
 
@@ -70,6 +73,7 @@ namespace Luchi.DesktopPet
             ResetPetScale();
 
             PetImage.Source = _idleSprite;
+            ScheduleIdleBlink();
         }
 
         private void PreviewIdleMenuItem_Click(
@@ -77,10 +81,7 @@ namespace Luchi.DesktopPet
             RoutedEventArgs e)
         {
             EndPress();
-            HideSpeechBubble();
-            ResetPetScale();
-
-            PetImage.Source = _idleSprite;
+            ReturnToIdle();
         }
 
         private void PreviewHappyMenuItem_Click(
@@ -88,6 +89,7 @@ namespace Luchi.DesktopPet
             RoutedEventArgs e)
         {
             EndPress();
+            PauseIdleBlink();
             HideSpeechBubble();
             ResetPetScale();
 
@@ -222,7 +224,7 @@ namespace Luchi.DesktopPet
 
             if (Mouse.LeftButton == MouseButtonState.Pressed)
             {
-                DragMove();
+                DragPetWithBlinkPaused();
             }
         }
 
@@ -328,6 +330,7 @@ namespace Luchi.DesktopPet
 
         private void ShowClickReaction()
         {
+            PauseIdleBlink();
             PetImage.Source = _happySprite;
             PlayClickAnimation();
 

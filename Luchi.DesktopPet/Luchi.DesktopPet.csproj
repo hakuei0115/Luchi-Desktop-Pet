@@ -16,11 +16,31 @@
 
   <ItemGroup>
     <None Remove="Assets\luchi-happy.png" />
+    <None Remove="Assets\luchi-idle-closed.png" />
+    <None Remove="Assets\luchi-idle-half-1.png" />
+    <None Remove="Assets\luchi-idle-half-2.png" />
+    <None Remove="Assets\luchi-idle-open-1.png" />
+    <None Remove="Assets\luchi-idle-open-2.png" />
     <None Remove="Assets\luchi-Idle.png" />
   </ItemGroup>
 
   <ItemGroup>
     <Resource Include="Assets\luchi-happy.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Assets\luchi-idle-closed.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Assets\luchi-idle-half-1.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Assets\luchi-idle-half-2.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Assets\luchi-idle-open-1.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Assets\luchi-idle-open-2.png">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </Resource>
     <Resource Include="Assets\luchi-Idle.png">
